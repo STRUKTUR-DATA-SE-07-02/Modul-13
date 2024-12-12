@@ -2,83 +2,85 @@
 #include <string>
 using namespace std;
 
-struct Book {
-    string title;
-    string returnDate;
-    Book* next;
+struct Project {
+    string name;
+    int duration;
+    Project* next;
 };
 
-struct Member {
+struct Employee {
     string name;
     string id;
-    Book* books;
-    Member* next;
+    Project* projects;
+    Employee* next;
 };
 
-Member* memberHead = nullptr;
+Employee* head = nullptr;
 
-void addMember(string name, string id) {
-    Member* newMember = new Member{name, id, nullptr, memberHead};
-    memberHead = newMember;
+void addEmployee(string name, string id) {
+    Employee* newEmployee = new Employee{name, id, nullptr, head};
+    head = newEmployee;
 }
 
-void addBook(string memberId, string bookTitle, string returnDate) {
-    Member* temp = memberHead;
-    while (temp && temp->id != memberId) {
+void addProject(string empId, string projectName, int duration) {
+    Employee* temp = head;
+    while (temp && temp->id != empId) {
         temp = temp->next;
     }
     if (temp) {
-        Book* newBook = new Book{bookTitle, returnDate, temp->books};
-        temp->books = newBook;
+        Project* newProject = new Project{projectName, duration, temp->projects};
+        temp->projects = newProject;
     }
 }
 
-void removeMember(string memberId) {
-    Member* curr = memberHead;
-    Member* prev = nullptr;
-    while (curr && curr->id != memberId) {
-        prev = curr;
-        curr = curr->next;
+void removeProject(string empId, string projectName) {
+    Employee* temp = head;
+    while (temp && temp->id != empId) {
+        temp = temp->next;
     }
-    if (curr) {
-        if (prev) {
-            prev->next = curr->next;
-        } else {
-            memberHead = curr->next;
+    if (temp) {
+        Project* curr = temp->projects;
+        Project* prev = nullptr;
+        while (curr && curr->name != projectName) {
+            prev = curr;
+            curr = curr->next;
         }
-        while (curr->books) {
-            Book* toDelete = curr->books;
-            curr->books = curr->books->next;
-            delete toDelete;
+        if (curr) {
+            if (prev) {
+                prev->next = curr->next;
+            } else {
+                temp->projects = curr->next;
+            }
+            delete curr;
         }
-        delete curr;
     }
 }
 
-void displayMembers() {
-    Member* member = memberHead;
-    while (member) {
-        cout << "Anggota: " << member->name << " (" << member->id << ")\\n";
-        Book* book = member->books;
-        while (book) {
-            cout << "  - Buku: " << book->title << " (Kembali: " << book->returnDate << ")\\n";
-            book = book->next;
+void displayData() {
+    Employee* emp = head;
+    while (emp) {
+        cout << "Pegawai: " << emp->name << " (" << emp->id << ")\n";
+        Project* proj = emp->projects;
+        while (proj) {
+            cout << "  - Proyek: " << proj->name << " (" << proj->duration << " bulan)\n";
+            proj = proj->next;
         }
-        member = member->next;
+        emp = emp->next;
     }
 }
 
 int main() {
-    addMember("Rani", "A001");
-    addMember("Dito", "A002");
-    addMember("Vina", "A003");
+    addEmployee("Andi", "P001");
+    addEmployee("Budi", "P002");
+    addEmployee("Citra", "P003");
 
-    addBook("A001", "Pemrograman C++", "01/12/2024");
-    addBook("A002", "Algoritma Pemrograman", "15/12/2024");
-    addBook("A001", "Struktur Data", "10/12/2024");
+    addProject("P001", "Aplikasi Mobile", 12);
+    addProject("P002", "Sistem Akuntansi", 8);
+    addProject("P003", "E-commerce", 10);
+    addProject("P001", "Analisis Data", 6);
 
-    removeMember("A002");
+    removeProject("P001", "Aplikasi Mobile");
 
-    displayMembers();
+    displayData();
     return 0;
 }
