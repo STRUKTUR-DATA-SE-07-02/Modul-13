@@ -18,39 +18,50 @@ struct Pegawai
 
 Pegawai *awal_simpul = nullptr;
 
-void tambah_pegawai(std::string nama, std::string id) {
+void tambah_pegawai(std::string nama, std::string id)
+{
     Pegawai *baru = new Pegawai;
     baru->nama = nama;
     baru->id = id;
     baru->proyek = nullptr;
     baru->selanjutnya = nullptr;
 
-    if (awal_simpul == nullptr) {
+    if (awal_simpul == nullptr)
+    {
         awal_simpul = baru;
-    } else {
+    }
+    else
+    {
         Pegawai *telusur_pegawai = awal_simpul;
-        while (telusur_pegawai->selanjutnya != nullptr) {
+        while (telusur_pegawai->selanjutnya != nullptr)
+        {
             telusur_pegawai = telusur_pegawai->selanjutnya;
         }
         telusur_pegawai->selanjutnya = baru;
     }
 }
 
-
-void tambah_proyek_baru(std::string id_pegawai, std::string nama_proyek_baru, int durasi_proyek) {
+void tambah_proyek_baru(std::string id_pegawai, std::string nama_proyek_baru, int durasi_proyek)
+{
     Pegawai *telusur_pegawai = awal_simpul;
-    while (telusur_pegawai != nullptr) {
-        if (telusur_pegawai->id == id_pegawai) {
+    while (telusur_pegawai != nullptr)
+    {
+        if (telusur_pegawai->id == id_pegawai)
+        {
             Proyek *proyek_baru = new Proyek;
             proyek_baru->nama = nama_proyek_baru;
             proyek_baru->durasi = durasi_proyek;
             proyek_baru->selanjutnya = nullptr;
 
-            if (telusur_pegawai->proyek == nullptr) {
+            if (telusur_pegawai->proyek == nullptr)
+            {
                 telusur_pegawai->proyek = proyek_baru;
-            } else {
+            }
+            else
+            {
                 Proyek *current_project = telusur_pegawai->proyek;
-                while (current_project->selanjutnya != nullptr) {
+                while (current_project->selanjutnya != nullptr)
+                {
                     current_project = current_project->selanjutnya;
                 }
                 current_project->selanjutnya = proyek_baru;
@@ -60,7 +71,6 @@ void tambah_proyek_baru(std::string id_pegawai, std::string nama_proyek_baru, in
         telusur_pegawai = telusur_pegawai->selanjutnya;
     }
 }
-
 
 void hapus_proyek(std::string id_pegawai, std::string nama_proyek)
 {
@@ -100,7 +110,7 @@ void tampilkan_data()
             std::cout << proyek_pegawai->nama << " -> ";
             proyek_pegawai = proyek_pegawai->selanjutnya;
         }
-        
+
         std::cout << "NULLPTR" << '\n';
         p = p->selanjutnya;
     }
