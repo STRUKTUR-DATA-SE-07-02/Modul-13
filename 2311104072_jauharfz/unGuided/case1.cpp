@@ -2,89 +2,89 @@
 #include <string>
 using namespace std;
 
-// Struktur untuk buku
-struct Book
+// Struktur untuk proyek
+struct Project
 {
-    string title;
-    string returnDate;
-    Book *next;
+    string name;
+    int duration;
+    Project *next;
 };
 
-// Struktur untuk anggota
-struct Member
+// Struktur untuk pegawai
+struct Employee
 {
     string name;
     string id;
-    Book *firstBook;
-    Member *next;
+    Project *firstProject;
+    Employee *next;
 };
 
-class LibraryManagement
+class EmployeeManagement
 {
 private:
-    Member *head;
+    Employee *head;
 
 public:
-    LibraryManagement()
+    EmployeeManagement()
     {
         head = NULL;
     }
 
-    // Fungsi untuk menambah anggota baru
-    void addMember(string name, string id)
+    // Fungsi untuk menambah pegawai baru
+    void addEmployee(string name, string id)
     {
-        Member *newMember = new Member;
-        newMember->name = name;
-        newMember->id = id;
-        newMember->firstBook = NULL;
-        newMember->next = NULL;
+        Employee *newEmployee = new Employee;
+        newEmployee->name = name;
+        newEmployee->id = id;
+        newEmployee->firstProject = NULL;
+        newEmployee->next = NULL;
 
         if (head == NULL)
         {
-            head = newMember;
+            head = newEmployee;
         }
         else
         {
-            Member *current = head;
+            Employee *current = head;
             while (current->next != NULL)
             {
                 current = current->next;
             }
-            current->next = newMember;
+            current->next = newEmployee;
         }
     }
 
-    // Fungsi untuk menambah buku ke anggota
-    void addBook(string memberId, string bookTitle, string returnDate)
+    // Fungsi untuk menambah proyek ke pegawai
+    void addProject(string employeeId, string projectName, int duration)
     {
-        Member *member = findMember(memberId);
-        if (member != NULL)
+        Employee *emp = findEmployee(employeeId);
+        if (emp != NULL)
         {
-            Book *newBook = new Book;
-            newBook->title = bookTitle;
-            newBook->returnDate = returnDate;
-            newBook->next = NULL;
+            Project *newProject = new Project;
+            newProject->name = projectName;
+            newProject->duration = duration;
+            newProject->next = NULL;
 
-            if (member->firstBook == NULL)
+            if (emp->firstProject == NULL)
             {
-                member->firstBook = newBook;
+                emp->firstProject = newProject;
             }
             else
             {
-                Book *current = member->firstBook;
+                Project *current = emp->firstProject;
                 while (current->next != NULL)
                 {
                     current = current->next;
                 }
-                current->next = newBook;
+                current->next = newProject;
             }
         }
     }
 
-    // Fungsi untuk mencari anggota berdasarkan ID
-    Member *findMember(string id)
+    // Fungsi untuk mencari pegawai berdasarkan ID
+    Employee *findEmployee(string id)
     {
-        Member *current = head;
+        Employee *current = head;
         while (current != NULL)
         {
             if (current->id == id)
@@ -96,100 +96,88 @@ public:
         return NULL;
     }
 
-    // Fungsi untuk menghapus anggota beserta bukunya
-    void deleteMember(string id)
+    // Fungsi untuk menghapus proyek
+    void deleteProject(string employeeId, string projectName)
     {
-        if (head == NULL)
-            return;
-
-        Member *current = head;
-        Member *prev = NULL;
-
-        // Jika anggota yang akan dihapus ada di awal
-        if (current != NULL && current->id == id)
+        Employee *emp = findEmployee(employeeId);
+        if (emp != NULL && emp->firstProject != NULL)
         {
-            head = current->next;
-            // Hapus semua buku
-            while (current->firstBook != NULL)
+            Project *current = emp->firstProject;
+            Project *prev = NULL;
+
+            // Jika proyek yang akan dihapus ada di awal
+            if (current->name == projectName)
             {
-                Book *temp = current->firstBook;
-                current->firstBook = current->firstBook->next;
-                delete temp;
+                emp->firstProject = current->next;
+                delete current;
+                return;
             }
-            delete current;
-            return;
-        }
 
-        // Mencari anggota yang akan dihapus
-        while (current != NULL && current->id != id)
-        {
-            prev = current;
-            current = current->next;
-        }
-
-        // Jika anggota ditemukan
-        if (current != NULL)
-        {
-            prev->next = current->next;
-            // Hapus semua buku
-            while (current->firstBook != NULL)
+            // Mencari proyek yang akan dihapus
+            while (current != NULL && current->name != projectName)
             {
-                Book *temp = current->firstBook;
-                current->firstBook = current->firstBook->next;
-                delete temp;
+                prev = current;
+                current = current->next;
             }
-            delete current;
+
+            // Jika proyek ditemukan
+            if (current != NULL)
+            {
+                prev->next = current->next;
+                delete current;
+            }
         }
     }
 
     // Fungsi untuk menampilkan semua data
     void displayAll()
     {
-        Member *currentMember = head;
-        while (currentMember != NULL)
+        Employee *currentEmp = head;
+        while (currentEmp != NULL)
         {
-            cout << "\nAnggota: " << currentMember->name << " (ID: " << currentMember->id << ")" << endl;
-            cout << "Buku yang dipinjam:" << endl;
+            cout << "\nPegawai: " << currentEmp->name << " (ID: " << currentEmp->id << ")" << endl;
+            cout << "Proyek yang dikelola:" << endl;
 
-            Book *currentBook = currentMember->firstBook;
-            if (currentBook == NULL)
+            Project *currentProj = currentEmp->firstProject;
+            if (currentProj == NULL)
             {
-                cout << "- Tidak ada buku yang dipinjam" << endl;
+                cout << "- Tidak ada proyek" << endl;
             }
-            while (currentBook != NULL)
+            while (currentProj != NULL)
             {
-                cout << "- " << currentBook->title << " (Pengembalian: " << currentBook->returnDate << ")" << endl;
-                currentBook = currentBook->next;
+                cout << "- " << currentProj->name << " (" << currentProj->duration << " bulan)" << endl;
+                currentProj = currentProj->next;
             }
-            currentMember = currentMember->next;
+            currentEmp = currentEmp->next;
         }
     }
 };
 
 int main()
 {
-    LibraryManagement lm;
+    EmployeeManagement em;
 
-    // 1. Menambahkan anggota
-    lm.addMember("Rani", "A001");
-    lm.addMember("Dito", "A002");
-    lm.addMember("Vina", "A003");
+    // 1. Menambahkan pegawai
+    em.addEmployee("Andi", "P001");
+    em.addEmployee("Budi", "P002");
+    em.addEmployee("Citra", "P003");
 
-    // 2. Menambahkan buku yang dipinjam
-    lm.addBook("A001", "Pemrograman C++", "01/12/2024");
-    lm.addBook("A002", "Algoritma Pemrograman", "15/12/2024");
+    // 2. Menambahkan proyek ke pegawai
+    em.addProject("P001", "Aplikasi Mobile", 12);
+    em.addProject("P002", "Sistem Akuntansi", 8);
+    em.addProject("P003", "E-commerce", 10);
 
-    // 3. Menambahkan buku baru untuk Rani
-    lm.addBook("A001", "Struktur Data", "10/12/2024");
+    // 3. Menambahkan proyek baru untuk Andi
+    em.addProject("P001", "Analisis Data", 6);
 
-    cout << "Data sebelum menghapus anggota Dito:" << endl;
-    lm.displayAll();
+    cout << "Data sebelum menghapus proyek:" << endl;
+    em.displayAll();
 
-    // 4. Menghapus anggota Dito beserta buku yang dipinjam
-    lm.deleteMember("A002");
+    // 4. Menghapus proyek "Aplikasi Mobile" dari Andi
+    em.deleteProject("P001", "Aplikasi Mobile");
 
-    cout << "\n\nData setelah menghapus anggota Dito:" << endl;
-    lm.displayAll();
+    cout << "\n\nData setelah menghapus proyek:" << endl;
+    em.displayAll();
 
     return 0;
 }
